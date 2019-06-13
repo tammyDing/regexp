@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="pwd" value="" />
+    <button id="btn">提交</button>
+<script>
+window.onload = function() {
+    var oBtn = document.getElementById('btn');
+    var pwdReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/;
+    var strReg2 = /^(?![0-9]+$)(?![a-zA-Z]+$)/; // 必须包含数字和字母
+    var dReg = /\d/;
+    var wReg = /[a-zA-Z]/;
+    var strReg = /[\u4E00-\u9FA5\s]/; // 中文和空格匹配
+    oBtn.onclick = function() {
+        var oPwd = document.getElementById('pwd').value;
+        var flag = regExpPswd(oPwd, function() {
+            console.log('pwd:', oPwd)
+        })
+        console.log('flag:', flag)
+    }
+}
+
+/** 
+ * 密码规则：6-20位字母和数据、符号组合登录密码；密码必须包含字母和数字，可以包含符号
+ * 解析1.必须包含数字和字母 2.符号可有可无 3.必须6-20之间
+*/
+function regExpPswd(pwd, callback) {
+  var boolStr;
+  var sRegExp = /[\u4E00-\u9FA5\s]/.test(pwd); // 中文和空格 true ---> false
+  var dRegExp = /\d/.test(pwd); // 数字 ---> true
+  var wRegExp = /[a-zA-Z]/.test(pwd); // 字母 ---> true
+  var lenRegExp = pwd.length > 5 && pwd.length < 21; // 长度6-20
+  boolStr = !sRegExp && dRegExp && wRegExp && lenRegExp
+  callback ? callback(boolStr) : ''
+  return boolStr;
+}
+
+</script>
+</body>
+</html>
