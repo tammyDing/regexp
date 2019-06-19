@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>面试题</title>
+    <style> * {padding:0;margin:0;}div {background: rgba(0,0,0,.7); padding: 20px;color: #fff;}</style>
+</head>
+<body>
+    <div id="coding"></div>
+</body>
+
+<script src="jquery.min.js"></script>
+<script>
+    window.onload = function() {
+        var oCoding = document.getElementById('coding');
+        oCoding.innerText = code()
+    }
+
+    function code() {
+        let code = `
+            1.
+            var a = 5;
+            function todo() {
+                var a = 9;
+                return function() {
+                    a = 7;
+                }
+            }
+            todo()();
+            console.log(a); // 5
+
+            2.filter()方法使用指定的函数测试所有元素，并创建一个包含所有通过测试的元素的新数组。filter -> []
+            (function() {
+                var greet = 'Hello Shuidi';
+                var toGreet = [].filter.call(greet, (element, index) => {
+                    return index > 5;
+                })
+                console.log(toGreet) // ['S', 'h', 'u', 'i', 'd', ''i]
+            }())
+            3.// 1.进入setTimeout移步到事件队列
+            setTimeout(function(){
+                console.log('定时器开始啦') // 5.
+            });
+
+            // 2.执行new Promise，然后then微作务移步到事件队列
+            new Promise(function(resolve){
+                console.log('马上执行for循环啦'); // 2.1
+                for(var i = 0; i < 10000; i++){ // 2.2
+                    i == 99 && resolve(); // 2.3
+                }
+            }).then(function(){
+                console.log('执行then函数啦') // 4
+            });
+            // 3.执行
+            console.log('代码执行结束');
+            4.例:
+                setTimeout(function() {
+                    console.log('setTimeout');
+                })
+                new Promise(function(resolve) {
+                    console.log('promise');
+                }).then(function() {
+                    console.log('then'); // resolve() -> then
+                })
+                console.log('console');
+            解析:
+                这段代码作为宏任务，进入主线程
+                先遇到setTimeout，那么将其回调函数注册后分发到宏任务Event Queue
+                接下来遇到了Promise，new Promise立即执行，then函数分发到微任务Event Queue。
+                遇到console.log()，立即执行。
+                整体代码script作为第一个宏任务执行结束
+                看看有哪些微任务?then在微任务Event Queue里面，执行。
+                第一轮事件循环结束了
+                开始第二轮循环
+                从宏任务Event Queue开始
+                宏任务Event Queue中setTimeout对应的回调函数，立即执行
+            5.例:
+                let data = [];
+                $.ajax({
+                    url: 'www.javascript.com',
+                    data:data,
+                    success:() => {
+                        console.log('发送成功!');
+                    }
+                })
+                console.log('代码执行结束');
+            解析:
+                1.ajax进入Event Table,注册回调函数
+                2.执行console.log('代码执行结束')
+                3.ajax事件完成,回调函数success进入Event Queue
+                4.主线程人Event Queue读取回调函数success并执行
+        `;
+        return code
+    };
+</script>
+</html>
